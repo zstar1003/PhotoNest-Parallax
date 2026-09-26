@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101413"><meta name="description" content="ZSTAR 的旅行摄影集。用视差镜头，重访城市、山川与日常。">
+<title>PhotoNest · 光影之间</title>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./style.css">
+<script src="./app.js" defer></script>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
+<header><a class="brand" href="./"><span class="brand-icon">◈</span> PhotoNest<span class="brand-sub">ZSTAR / VISUAL JOURNAL</span></a><div class="header-right"><span class="live-dot"></span> 光影之间 <span class="edition">VOL. 01 — 2026</span></div></header>
+<main>
+<div class="collection-head"><p>在路上，收藏每一帧。</p><span id="collection-count">PHOTOGRAPHIC ARCHIVE</span></div>
+<nav id="filters" aria-label="选择相册"></nav>
+<section class="exhibition" aria-label="摄影作品视差轮播" aria-roledescription="轮播">
+<div class="vertical-label" aria-hidden="true">A JOURNEY THROUGH LIGHT & SPACE</div>
+<button class="arrow prev" aria-label="上一张照片"><span>←</span></button>
+<div class="scene">
+<div class="image-plane"><button id="open-photo" class="photo-frame" aria-label="放大当前照片"><img id="hero" alt="" fetchpriority="high"><span class="view-label">↗ &nbsp; VIEW PHOTOGRAPH</span></button><div class="frame-top"><span id="city-en"></span><span id="photo-date"></span></div></div>
+<div class="info-plane"><div class="serial" id="serial">01</div><div class="caption"><span class="caption-kicker" id="location"></span><h1 id="title">光影之间</h1><p id="description">正在载入摄影集…</p></div></div>
+<div class="photo-meta"><span id="dimensions"></span><span id="position"></span></div>
+</div>
+<button class="arrow next" aria-label="下一张照片"><span>→</span></button>
+</section>
+<div class="filmstrip-head"><span>CONTACT SHEET <span id="sheet-count"></span></span><div><button id="autoplay" aria-pressed="false">▷ 自动播放</button><span class="key-hint">← → 切换作品</span></div></div>
+<div id="filmstrip" aria-label="照片缩略图列表"></div>
+<div class="bottom-line"><span>以镜头为笔，写一封给世界的信。</span><span id="status" role="status" aria-live="polite"></span><span class="bottom-mark">EXPLORE. FRAME. REMEMBER.</span></div>
+</main>
+<footer><span>© 2026 ZSTAR · PHOTONEST</span><a href="https://github.com/zstar1003/PhotoNest" target="_blank" rel="noopener">影像档案 ↗</a><span>INSPIRED BY <a href="https://github.com/hakadao/ArknightsParallaxCarousel" target="_blank" rel="noopener">HAKADAO ↗</a></span></footer>
+<dialog id="lightbox" aria-label="照片大图"><div class="lightbox-toolbar"><span id="lightbox-title"></span><a id="original" target="_blank" rel="noopener">查看原图 ↗</a><button id="close-lightbox" aria-label="关闭大图">关闭 ×</button></div><img id="lightbox-image" alt=""><p>原图保留完整分辨率，点击「查看原图」打开。</p></dialog>
+<noscript>此摄影展廊需要启用 JavaScript。你也可以前往 <a href="https://github.com/zstar1003/PhotoNest">PhotoNest</a> 查看照片。</noscript>
+</body></html>
