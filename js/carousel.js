@@ -6,16 +6,14 @@ const mediaList = document.querySelector('#media-list');
 const layerFront = document.querySelector('#media-layer-front');
 const mediaSerial = layerFront.querySelector('.media-info-serial');
 const mediaTitle = layerFront.querySelector('.media-info-title');
-const mediaDetail = layerFront.querySelector('.media-info-detail');
 const mediaMainPic = document.querySelector('.media-main-pic');
 let albums;
 try {
-  const response = await fetch('gallery.json?v=places-1');
+  const response = await fetch('gallery.json?v=viewer-2');
   if (!response.ok) throw Error('Unable to load gallery');
   albums = await response.json();
 } catch (error) {
   mediaTitle.textContent = '相册加载失败';
-  mediaDetail.textContent = '请刷新页面重试';
   console.error(error); return;
 }
 let carouselList = [], items = [], navItems = [];
@@ -24,28 +22,45 @@ const sidebar = document.querySelector('#places-sidebar');
 const toggle = document.querySelector('#places-toggle');
 const backdrop = document.querySelector('#places-backdrop');
 const mobile = matchMedia('(max-width: 900px)');
+const viewer=document.querySelector('#photo-viewer');
+const viewerImage=document.querySelector('#viewer-image');
+mediaMainPic.addEventListener('click',e=>{
+  const imageButton=e.target.closest('.media-img');
+  if(!imageButton || busy || !carouselList.length)return;
+  const photo=carouselList[activeIndex];
+  viewerImage.src=photo.thumbnail;
+  viewerImage.alt=photo.title;
+  document.querySelector('#viewer-title').textContent=photo.title;
+  viewer.showModal();
+});
+document.querySelector('#viewer-close').addEventListener('click',()=>viewer.close());
+viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close();});
+viewer.addEventListener('close',()=>mediaMainPic.firstElementChild.focus({preventScroll:true}));
+
 function setSidebar(open, restoreFocus = false) {
-  sidebar.hidden = !open;
+  sidebar.inert = !open;
+  sidebar.setAttribute("aria-hidden",String(!open));
   document.body.classList.toggle('places-open',open);
   toggle.setAttribute('aria-expanded',String(open));
+  toggle.setAttribute('aria-label',open?'收起地点栏':'展开地点栏');
+  toggle.title=open?'收起地点栏':'展开地点栏';
   backdrop.hidden = !open || !mobile.matches;
   if (restoreFocus) toggle.focus();
   requestAnimationFrame(() => { if(items.length) setSlidePosition(); });
 }
-toggle.addEventListener('click',()=>{setSidebar(sidebar.hidden); if(!sidebar.hidden) document.querySelector('#places-close').focus();});
-document.querySelector('#places-close').addEventListener('click',()=>setSidebar(false,true));
+toggle.addEventListener('click',()=>setSidebar(sidebar.inert));
 backdrop.addEventListener('click',()=>setSidebar(false,true));
 mobile.addEventListener('change',()=>setSidebar(!mobile.matches));
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape' && !sidebar.hidden) setSidebar(false,true);
-  if(e.key==='Tab' && mobile.matches && !sidebar.hidden) {
-    const focusable=[...sidebar.querySelectorAll('button')];
+  if(e.key==='Escape' && !viewer.open && !sidebar.inert) setSidebar(false,true);
+  if(e.key==='Tab' && mobile.matches && !sidebar.inert) {
+    const focusable=[toggle,...sidebar.querySelectorAll('button')];
     if(e.shiftKey && document.activeElement===focusable[0]) {e.preventDefault();focusable.at(-1).focus();}
     else if(!e.shiftKey && document.activeElement===focusable.at(-1)) {e.preventDefault();focusable[0].focus();}
   }
 });
 setSidebar(!mobile.matches);
-document.querySelector('#album-count').textContent=String(albums.length).padStart(2,'0');
+document.querySelector('#album-count').textContent=String(albums.length);
 for (const album of albums) {
   const button=document.createElement('button');
   button.dataset.album=album.id;
@@ -57,13 +72,12 @@ for (const album of albums) {
 }
 function selectAlbum(album) {
   generation++; activeIndex=0;busy=false;pending=null;initial=true;
-  carouselList=album.photos.map((p,i)=>({title:p.title,desc:`#${p.location}#`,thumbnail:p.preview,small:p.smallPreview||p.preview,href:p.original,serial:String(i+1).padStart(2,'0')}));
+  carouselList=album.photos.map((p,i)=>({title:p.title,thumbnail:p.preview,small:p.smallPreview||p.preview,serial:String(i+1).padStart(2,'0')}));
   items=[];navItems=[];mediaList.replaceChildren();
   layerFront.querySelector('.media-nav-wrapper').replaceChildren();
   document.querySelectorAll('#album-list button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.album===album.id)));
-  document.querySelector('#album-status').textContent=`${album.title} / ${album.photos.length} 张作品`;
-  for(const el of [mediaSerial,mediaTitle,mediaDetail]) {el.style.transition='none';el.style.opacity='1';el.style.transform='none';}
-  const mainImage=document.createElement('a');mainImage.className='media-img';mainImage.target='_blank';mainImage.rel='noopener';
+  for(const el of [mediaSerial,mediaTitle]) {el.style.transition='none';el.style.opacity='1';el.style.transform='none';}
+  const mainImage=document.createElement('button');mainImage.type='button';mainImage.className='media-img';
   mediaMainPic.replaceChildren(mainImage);
 for (const [index,item] of carouselList.entries()) {
   const thumb = document.createElement('div');
@@ -81,10 +95,9 @@ for (const [index,item] of carouselList.entries()) {
   }
 }
 const first=carouselList[0];
-mediaMainPic.firstElementChild.href=first.href;
 mediaMainPic.firstElementChild.style.backgroundImage=`url("${first.thumbnail}")`;
-mediaMainPic.firstElementChild.setAttribute('aria-label',`查看原图：${first.title}`);
-mediaSerial.textContent=first.serial;mediaTitle.textContent=first.title;mediaDetail.textContent=first.desc;
+mediaMainPic.firstElementChild.setAttribute('aria-label',`放大照片：${first.title}`);
+mediaSerial.textContent=first.serial;mediaTitle.textContent=first.title;
 updateNavigation();setSlidePosition();
 }
 function updateNavigation() {
@@ -123,18 +136,16 @@ async function navigate(index,direction='left') {
   try {
     if(reduceMotion.matches) {
       mediaMainPic.firstElementChild.style.backgroundImage=`url("${item.thumbnail}")`;
-      mediaMainPic.firstElementChild.href=item.href;
-      mediaSerial.textContent=item.serial;mediaTitle.textContent=item.title;mediaDetail.textContent=item.desc;
+      mediaSerial.textContent=item.serial;mediaTitle.textContent=item.title;
     } else {
       await Promise.all([
-        imageZoom(.25,direction,item.thumbnail,item.href,ownGeneration),
+        imageZoom(.25,direction,item.thumbnail,ownGeneration),
         slideInText(mediaSerial,direction,.2,.4,item.serial,ownGeneration),
-        slideInText(mediaTitle,direction,.2,.5,item.title,ownGeneration),
-        slideInText(mediaDetail,direction,.2,.6,item.desc,ownGeneration)
+        slideInText(mediaTitle,direction,.2,.5,item.title,ownGeneration)
       ]);
     }
     if(ownGeneration!==generation)return;
-    mediaMainPic.firstElementChild.setAttribute('aria-label',`查看原图：${item.title}`);
+    mediaMainPic.firstElementChild.setAttribute('aria-label',`放大照片：${item.title}`);
   } finally {
     if(ownGeneration!==generation)return;
     busy=false;
@@ -145,11 +156,12 @@ function step(delta) { navigate((pending?.index??activeIndex)+delta,delta>0?'lef
 const prev = document.querySelector('#arrow-btn-prev'), next = document.querySelector('#arrow-btn-next');
 prev.addEventListener('click',()=>step(-1));next.addEventListener('click',()=>step(1));
 for(const button of [prev,next]) button.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();button.click();}});
-document.addEventListener('keydown',e=>{if(mobile.matches&&!sidebar.hidden)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();step(e.key==='ArrowRight'?1:-1);}});
+document.addEventListener('keydown',e=>{if(viewer.open || (mobile.matches&&!sidebar.inert))return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();step(e.key==='ArrowRight'?1:-1);}});
 let touch;
 mediaMainPic.addEventListener('touchstart',e=>{touch=e.changedTouches[0];},{passive:true});
 mediaMainPic.addEventListener('touchend',e=>{if(!touch)return;const dx=e.changedTouches[0].clientX-touch.clientX,dy=e.changedTouches[0].clientY-touch.clientY;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){e.preventDefault();step(dx<0?1:-1);}touch=null;});
 window.addEventListener('resize',setSlidePosition);
+document.querySelector('#section-media').addEventListener('transitionend',setSlidePosition);
 selectAlbum(albums[0]);
 function sleep(time) {
   return new Promise(resolve => setTimeout(resolve, time))
@@ -194,9 +206,8 @@ async function slideInText(element, direction, duration, delay, newText, ownGene
  * @param {number} duration 持續時間
  * @param {'left' | 'right'} direction 方向 (1.'left', 2.'right')
  * @param {string} newImg 切換後的圖片
- * @param {string} href 圖片跳轉連結
  */
-async function imageZoom(duration, direction, newImg, href, ownGeneration) {
+async function imageZoom(duration, direction, newImg, ownGeneration) {
   let oldImgTransformOrigin
   let newImgTransformOrigin
   if (direction === 'left') {
@@ -210,7 +221,6 @@ async function imageZoom(duration, direction, newImg, href, ownGeneration) {
   mediaMainPic.innerHTML += mediaMainPic.innerHTML
   const mediaOldImg = mediaMainPic.querySelector('.media-img:nth-child(1)')
   const mediaNewImg = mediaMainPic.querySelector('.media-img:nth-child(2)')
-  mediaNewImg.href = href
   mediaNewImg.style.backgroundImage = `url(${newImg})`
 
   mediaOldImg.style.transformOrigin = oldImgTransformOrigin

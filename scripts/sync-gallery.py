@@ -9,7 +9,6 @@ for album in albums:
     for p in album['photos']:
         path='assets/photos/'+album['id']+'-'+p['thumb'].split('/')[-1]
         jobs.append((BASE+p['thumb'],ROOT/path))
-        p['original']=BASE+p['src']
         p['preview']=path
         for key in ['src','thumb','download']: p.pop(key,None)
 def download(job):

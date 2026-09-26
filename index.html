@@ -4,21 +4,20 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/style.css?v=places-1" />
+    <link rel="stylesheet" href="css/style.css?v=viewer-2" />
     <title>PhotoNest · 摄影轮播</title>
     <meta name="description" content="ZSTAR 摄影集，基于 ArknightsParallaxCarousel 原版视差轮播。" />
     <link rel="icon" href="favicon.svg" />
   </head>
   <body>
     <div id="particles-js"></div>
-    <button id="places-toggle" aria-controls="places-sidebar" aria-expanded="true"><span aria-hidden="true">☰</span> 地点</button>
+    <button id="places-toggle" aria-controls="places-sidebar" aria-expanded="true" aria-label="收起地点栏" title="收起地点栏"><span class="fold-chevron" aria-hidden="true">‹</span><span class="fold-label">地点</span></button>
     <button id="places-backdrop" aria-label="关闭地点菜单" hidden></button>
     <aside id="places-sidebar" aria-label="地点相册">
-      <div class="places-heading"><span>PHOTONEST</span><button id="places-close" aria-label="收起地点菜单">×</button></div>
+      <div class="places-heading"><span>光影之间</span></div>
       <h1>地点档案</h1>
-      <p class="places-subtitle">PLACES / <span id="album-count">07</span></p>
+      <p class="places-subtitle"><span id="album-count">7</span> 处风景</p>
       <nav id="album-list" aria-label="选择城市或地点"></nav>
-      <div class="places-footer"><span id="album-status" aria-live="polite"></span><p>循着光影，重访此地。</p></div>
     </aside>
     <section id="section-media">
       <!-- #region 左側箭咀 -->
@@ -50,7 +49,7 @@
         <div class="media-main-view" id="media-layer-view">
           <div class="media-current">
             <div class="media-main-pic">
-              <a target="_blank" rel="noopener" class="media-img"></a>
+              <button type="button" class="media-img" aria-label="放大照片"></button>
             </div>
 
             <div class="media-user-interactive" id="media-layer-front">
@@ -58,9 +57,7 @@
                 <div class="media-info-wrapper">
                   <div class="media-info-serial"></div>
                   <div class="media-info-title">正在载入</div>
-                  <div class="media-info-detail">
-                    <div class="media-detail-desc"></div>
-                  </div>
+
                 </div>
 
                 <div class="media-nav-wrapper"></div>
@@ -96,8 +93,12 @@
       </div>
       <!-- #endregion -->
     </section>
+    <dialog id="photo-viewer" aria-label="照片预览">
+      <div class="viewer-bar"><span id="viewer-title"></span><button id="viewer-close" aria-label="关闭照片预览">关闭 <span aria-hidden="true">×</span></button></div>
+      <img id="viewer-image" alt="" />
+    </dialog>
     <script src="js/parallax-move.js"></script>
-    <script src="js/carousel.js?v=places-1"></script>
+    <script src="js/carousel.js?v=viewer-2"></script>
     <script src="js/particles.min.js"></script>
     <script src="js/particles-effect.js"></script>
   </body>
