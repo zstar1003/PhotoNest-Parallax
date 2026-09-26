@@ -30,7 +30,7 @@ for (const [index,item] of carouselList.entries()) {
   thumb.append(picture); mediaList.append(thumb); items.push(thumb);
   const nav = document.createElement('div'); nav.className = 'media-nav-item'; nav.role = 'button'; nav.tabIndex = 0;
   nav.setAttribute('aria-label', `切换到 ${item.serial} ${item.title}`);
-  layerFront.querySelector('.media-nav-wrapper').append(nav); navItems.push(nav);
+  layerFront.querySelector('.media-nav-wrapper').append(nav, document.createTextNode('\n  ')); navItems.push(nav);
   for (const element of [thumb,nav]) {
     element.addEventListener('click',()=>navigate(index,index>activeIndex?'left':'right'));
     element.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();element.click();}});
