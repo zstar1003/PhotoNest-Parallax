@@ -1,21 +1,18 @@
-# PhotoNest · 光影之间
+# PhotoNest Parallax
 
-ZSTAR 的旅行摄影展廊，以分层视差、悬浮标题和缩略图胶片呈现摄影作品。
+将 [hakadao/ArknightsParallaxCarousel](https://github.com/hakadao/ArknightsParallaxCarousel) 的原版视差轮播替换为 ZSTAR 的摄影作品。
 
-## 在线浏览
+网站：https://xdxsb.top/PhotoNest-Parallax/
 
-https://zstar1003.github.io/PhotoNest-Parallax/
+## 原版效果
 
-## 功能
+保留上游 HTML 布局、CSS、Bender 数字字体、黑色纹理背景、粒子配置、SVG 箭头、毛玻璃标题、四张缩略图、斜杠指示器、图片对角缩放切换与文字错峰滑入，以及前后景分层视差。没有额外导航栏或相册筛选界面。
 
-- 7 个相册，全部照片及城市筛选
-- 鼠标分层视差，照片淡入缩放与标题滑入
-- 上一张 / 下一张、键盘方向键、手机左右滑动、可暂停自动播放
-- 大图预览、原始分辨率照片入口
-- 响应式布局、键盘焦点和减少动态效果偏好支持
-- 预览图片随仓库部署，无运行时框架依赖
+照片取自 [PhotoNest](https://github.com/zstar1003/PhotoNest)：7 个相册，共 88 张。点击主图打开原图。使用箭头、缩略图、斜杠、键盘或手机滑动切换。
 
-## 本地预览
+为适配 88 张照片，指示器一次保留原版的 18 个，随当前照片移动；修复首尾缩略图衔接及连续点击时的动画冲突。小屏幕按比例缩小原布局，减少动态效果偏好下关闭动画。
+
+## 本地预览与更新
 
 ```sh
 python3 -m http.server 8080
@@ -23,21 +20,8 @@ python3 -m http.server 8080
 
 打开 http://localhost:8080。无需构建。
 
-## 更新图片
+更新源相册后运行 `python3 scripts/sync-gallery.py`，提交并推送。预览图保存在 `assets/photos/`，原图按需从源仓库打开。GitHub Pages 从 main 分支根目录部署。
 
-照片和元数据来自 [PhotoNest](https://github.com/zstar1003/PhotoNest)。修改源仓库后运行：
+## 版权
 
-```sh
-python3 scripts/sync-gallery.py
-```
-
-提交 `gallery.json` 和 `assets/photos/`。推送 main 分支后 GitHub Pages 自动部署。
-原图链接指向源仓库，预览图存放在当前仓库。Google Fonts 无法访问时使用本地字体回退。
-
-## 部署
-
-GitHub Settings → Pages → Deploy from a branch → `main` / `/ (root)`。
-
-## 致谢与版权
-
-交互设计参考 [hakadao/ArknightsParallaxCarousel](https://github.com/hakadao/ArknightsParallaxCarousel)（MIT），保留其许可证于 `THIRD_PARTY_LICENSES.txt`。本站 HTML/CSS/JavaScript 为重新实现；不使用参考项目的游戏图片或字体。摄影作品来自 ZSTAR 的 PhotoNest 仓库，摄影版权归原作者所有。
+原项目版权归 Hakadao 所有，MIT 许可证保留于 `THIRD_PARTY_LICENSES.txt`。原版代码与配套资源来自该项目。摄影作品归原作者所有。
