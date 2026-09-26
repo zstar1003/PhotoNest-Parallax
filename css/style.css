@@ -338,3 +338,39 @@ body {
   *, *::after { transition: none !important; }
   #media-layer-view, #media-layer-front { transform: none !important; }
 }
+
+/* The place index uses the reference's monochrome glass and slash motifs. */
+body { background-image: url(../img/bg.webp); }
+#places-toggle, #places-close, #album-list button { font: inherit; color: #e3e3e3; cursor: pointer; border: 0; }
+#places-toggle { position: fixed; z-index: 6; left: 22px; top: 25px; padding: 10px 14px; background: #ffffff0c; backdrop-filter: blur(12px); font: 13px sans-serif; letter-spacing: 3px; }
+#places-toggle span { margin-right: 7px; font-size: 15px; }
+#places-sidebar { position: fixed; z-index: 8; top: 0; bottom: 0; left: 0; width: 190px; padding: 31px 22px 28px; box-sizing: border-box; color: #e3e3e3; background: #141414b8; border-right: 1px solid #ffffff15; backdrop-filter: blur(16px); display: flex; flex-direction: column; transition: transform .3s ease; overflow-y: auto; }
+#places-sidebar[hidden], #places-backdrop[hidden] { display: none; }
+.places-heading { display: flex; align-items: center; justify-content: space-between; }
+.places-heading>span { font: 12px Bender, sans-serif; letter-spacing: 2px; color: #9a9a9a; }
+#places-close { padding: 2px 4px 5px; background: none; font: 24px sans-serif; color: #888; }
+#places-sidebar h1 { margin-top: 42px; font: 400 21px sans-serif; letter-spacing: 4px; }
+.places-subtitle { margin-top: 12px; font: 10px Bender,sans-serif; letter-spacing: 2px; color: #888; }
+#album-list { margin-top: 33px; display: flex; flex-direction: column; gap: 7px; }
+#album-list button { position: relative; display: flex; align-items: center; width: 100%; box-sizing: border-box; background: transparent; text-align: left; padding: 14px 9px 14px 17px; font: 14px sans-serif; letter-spacing: 2px; color: #888; transition: color .2s,background .2s; }
+#album-list button::before { content: ''; width: 3px; height: 12px; position: absolute; left: 2px; background: #666; transform: skewX(-30deg); opacity: 0; }
+#album-list button[aria-pressed=true] { background: #ffffff0d; color: #eee; }
+#album-list button[aria-pressed=true]::before { opacity: 1; background: #eee; }
+#album-list button:hover { color: #eee; background: #ffffff08; }
+#album-list button .place-count { margin-left: auto; font: 12px Bender,sans-serif; letter-spacing: 1px; opacity: .65; }
+.places-footer { margin-top: auto; padding-top: 35px; font: 10px sans-serif; color: #888; line-height: 2; letter-spacing: 1px; }
+.places-footer p { color: #666; }
+#places-backdrop { position: fixed; inset: 0; border: 0; background: #0009; z-index: 7; }
+button:focus-visible { outline: 1px solid #ddd; outline-offset: 3px; }
+@media (min-width: 901px) {
+  body.places-open #section-media { width: calc(100% - 190px); margin-left: 190px; }
+  body.places-open #places-toggle { visibility: hidden; }
+}
+@media (min-width: 901px) and (max-width: 1350px) {
+  html:has(body.places-open) { font-size: calc((100vw - 190px) / 90); }
+}
+@media (max-width: 900px) {
+  #places-sidebar { width: 230px; }
+  #places-toggle { left: 18px; top: 20px; }
+  #places-sidebar h1 { margin-top: 28px; }
+}

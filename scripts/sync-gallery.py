@@ -25,3 +25,7 @@ def download(job):
 with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool: list(pool.map(download,jobs))
 (ROOT/'gallery.json').write_text(json.dumps(albums,ensure_ascii=False,indent=2)+'\n')
 print(f'Synced {len(jobs)} photos in {len(albums)} albums')
+
+# Rebuild the two WebP sizes after downloading source thumbnails.
+import subprocess, sys
+subprocess.run([sys.executable, str(ROOT/"scripts/optimize-gallery.py")], check=True)
